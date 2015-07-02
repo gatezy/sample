@@ -12,7 +12,7 @@ using WebApi.Models.Car;
 
 namespace WebApi.Controllers
 {
-    
+    [RoutePrefix("CarStocks")]
     public class CarController : ApiController
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -30,7 +30,7 @@ namespace WebApi.Controllers
             return this.Ok();
         }
 
-        [Route("CarStocks")]
+        [Route("")]
         [HttpGet]
         public IList<CarStockViewModel> GetAll()
         {
@@ -39,7 +39,7 @@ namespace WebApi.Controllers
                     .Select(x => new CarStockViewModel(x)).ToList();
         }
 
-        [Route("CarStocks/{id}")]
+        [Route("{id}")]
         [HttpGet]
         public CarStockViewModel Get(Guid id)
         {
@@ -47,7 +47,7 @@ namespace WebApi.Controllers
                 _queryDispatcher.Request<CarStockQuery, CarStock> (new CarStockQuery() {Id = id}));
         }
 
-        [Route("CarStocks/create")]
+        [Route("create")]
         [HttpPost]
         public CarStockViewModel Create([FromBody] CreateCarStockViewModel createModel)
         {
@@ -57,7 +57,7 @@ namespace WebApi.Controllers
                 _queryDispatcher.Request<CarStockQuery, CarStock>(new CarStockQuery() { Id = newId }));
         }
 
-        [Route("CarStocks/update")]
+        [Route("{id}/update")]
         [HttpPost]
         public CarStockViewModel Update([FromBody] UpdateCarStockViewModel updateModel)
         {
@@ -66,7 +66,8 @@ namespace WebApi.Controllers
                 _queryDispatcher.Request<CarStockQuery, CarStock>(new CarStockQuery() { Id = updateModel.Id }));
         }
 
-        [Route("CarStocks/{id}/delete")]
+        [Route("{id}/delete")]
+        [HttpDelete]
         public IHttpActionResult Delete(Guid id)
         {
             _commandDispatcher.Dispatch(new DeleteCarStockCommand(){Id = id});

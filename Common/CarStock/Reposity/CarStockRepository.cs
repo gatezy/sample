@@ -25,6 +25,9 @@ namespace CarStockService.Reposity
                     new CarStock(Guid.NewGuid(), "Honda","Civic",2014,"Red",10),
                     new CarStock(Guid.NewGuid(), "Honda","Civic",2014,"Blue",20),
                     new CarStock(Guid.NewGuid(), "Honda","Civic",2014,"Black",30),
+                    new CarStock(Guid.NewGuid(), "Toyota","Corolla",2015,"Red",10),
+                    new CarStock(Guid.NewGuid(), "Toyota","Corolla",2015,"Blue",20),
+                    new CarStock(Guid.NewGuid(), "Toyota","Corolla",2015,"Black",30),
             };
         }
 
