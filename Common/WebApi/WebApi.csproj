@@ -91,6 +91,7 @@
     <Compile Include="App_Start\AutofacBindings.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CarController.cs" />
+    <Compile Include="Controllers\HealthCheckController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

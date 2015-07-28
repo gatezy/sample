@@ -11,23 +11,11 @@ namespace CarStockService.Command
 {
     public class CreateCarStockCommand : ICommand
     {
-        public Guid Id { get; set; }
-
-        public string Make { get; set; }
-        public string Model { get; set; }
-        public int Year { get; set; }
-        public string Color { get; set; }
-
-        public int Stock { get; set; }
+        public CarStock Car { get; private set; }
 
         public CreateCarStockCommand(Guid id, string make, string model, int year, string color, int stock)
         {
-            this.Id = id;
-            this.Make = make;
-            this.Model = model;
-            this.Year = year;
-            this.Color = color;
-            this.Stock = stock;
+            this.Car = new CarStock(id, make, model, year, color, stock);
         }
     }
 
@@ -42,8 +30,7 @@ namespace CarStockService.Command
 
         public void Handle(CreateCarStockCommand command)
         {
-            _repository.Create(new CarStock(command.Id, command.Make, command.Model, command.Year, command.Color,
-                command.Stock));
+            _repository.Create(command.Car);
         }
     }
 }

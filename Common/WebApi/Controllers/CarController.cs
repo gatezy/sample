@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 using CarStockService.Command;
 using CarStockService.Entity;
 using CarStockService.Query;
@@ -12,7 +13,7 @@ using WebApi.Models.Car;
 
 namespace WebApi.Controllers
 {
-    [RoutePrefix("CarStocks")]
+    [RoutePrefix("v1/CarStocks")]
     public class CarController : ApiController
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -24,49 +25,40 @@ namespace WebApi.Controllers
             this._commandDispatcher = commandDispatcher;
         }
 
-
-        public IHttpActionResult Index()
-        {
-            return this.Ok();
-        }
-
         [Route("")]
         [HttpGet]
-        public IList<CarStockViewModel> GetAll()
+        [ResponseType(typeof(IList<CarStockViewModel>))]
+        public IHttpActionResult GetAll()
         {
-            return
-                _queryDispatcher.Request<AllCarStockQuery, IList<CarStock>>(new AllCarStockQuery())
-                    .Select(x => new CarStockViewModel(x)).ToList();
+            var result = _queryDispatcher.Request<AllCarStockQuery, IList<CarStock>>(new AllCarStockQuery()).Select(x => new CarStockViewModel(x)).ToList();
+            return this.Ok(result);
         }
 
         [Route("{id}")]
         [HttpGet]
-        public CarStockViewModel Get(Guid id)
+        [ResponseType(typeof(CarStockViewModel))]
+        public IHttpActionResult Get(Guid id)
         {
-            return new CarStockViewModel(
-                _queryDispatcher.Request<CarStockQuery, CarStock> (new CarStockQuery() {Id = id}));
+            return this.Ok(new CarStockViewModel(_queryDispatcher.Request<CarStockQuery, CarStock> (new CarStockQuery() {Id = id})));
         }
 
-        [Route("create")]
+        [Route("")]
         [HttpPost]
-        public CarStockViewModel Create([FromBody] CreateCarStockViewModel createModel)
+        public IHttpActionResult Create([FromBody] CreateCarStockViewModel createModel)
         {
-            var newId = Guid.NewGuid();
-            _commandDispatcher.Dispatch(new CreateCarStockCommand(newId,createModel.Make,createModel.Model,createModel.Year,createModel.Color,createModel.Stock));
-            return new CarStockViewModel(
-                _queryDispatcher.Request<CarStockQuery, CarStock>(new CarStockQuery() { Id = newId }));
+            _commandDispatcher.Dispatch(new CreateCarStockCommand(createModel.Id, createModel.Make, createModel.Model, createModel.Year, createModel.Color, createModel.Stock));
+            return this.Ok();
         }
 
-        [Route("{id}/update")]
-        [HttpPost]
-        public CarStockViewModel Update([FromBody] UpdateCarStockViewModel updateModel)
+        [Route("{id}")]
+        [HttpPut]
+        public IHttpActionResult Update([FromBody] UpdateCarStockViewModel updateModel)
         {
             _commandDispatcher.Dispatch(new CreateCarStockCommand(updateModel.Id, updateModel.Make, updateModel.Model, updateModel.Year, updateModel.Color, updateModel.Stock));
-            return new CarStockViewModel(
-                _queryDispatcher.Request<CarStockQuery, CarStock>(new CarStockQuery() { Id = updateModel.Id }));
+            return this.Ok();
         }
 
-        [Route("{id}/delete")]
+        [Route("{id}")]
         [HttpDelete]
         public IHttpActionResult Delete(Guid id)
         {
