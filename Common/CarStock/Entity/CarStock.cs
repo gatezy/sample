@@ -31,17 +31,9 @@ namespace CarStockService.Entity
             this.Stock = stock;
         }
 
-        //this looks like a duplicate of previous constructor
-        //but this is a domain object, inner biz logic should be implemented here. 
-        //like partial update also triggers the status update, etc...
-        internal CarStock Update(string make, string model, int year, string color, int stock)
+        internal CarStock Update(CarStock car)
         {
-            return new CarStock(this.Id,
-                make,
-                model,
-                year,
-                color,
-                stock);
+            return new CarStock(this.Id, car.Make, car.Model, car.Year, car.Color, car.Stock);
         }
     }
 }

@@ -10,6 +10,10 @@ namespace WebApi.Controllers
     [RoutePrefix("v1/healthcheck")]
     public class HealthCheckController : ApiController
     {
+        /// <summary>
+        /// health check for aws
+        /// </summary>
+        [HttpGet]
         [Route("")]
         public IHttpActionResult Index()
         {

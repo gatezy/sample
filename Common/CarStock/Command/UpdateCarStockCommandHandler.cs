@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CarStockService.Entity;
 using CarStockService.Reposity;
 using Common.CQRS;
 
@@ -10,21 +11,11 @@ namespace CarStockService.Command
 {
     public class UpdateCarStockCommand : ICommand
     {
-        public Guid Id { get; set; }
-        public string Make { get; set; }
-        public string Model { get; set; }
-        public int Year { get; set; }
-        public string Color { get; set; }
-        public int Stock { get; set; }
+        public CarStock Car { get; private set; }
 
-        public UpdateCarStockCommand(Guid id,string make, string model, int year, string color, int stock)
+        public UpdateCarStockCommand(Guid id, string make, string model, int year, string color, int stock)
         {
-            this.Id = id;
-            this.Make = make;
-            this.Model = model;
-            this.Year = year;
-            this.Color = color;
-            this.Stock = stock;
+            this.Car = new CarStock(id, make, model, year, color, stock);
         }
     }
 
@@ -39,9 +30,15 @@ namespace CarStockService.Command
 
         public void Handle(UpdateCarStockCommand command)
         {
-            var carStock = _repository.Get(command.Id);
-            var updatedStock = carStock.Update(command.Make, command.Model, command.Year, command.Color,
-                command.Stock);
+            var carStock = _repository.Get(command.Car.Id);
+
+            //may not necessary to throw exceptions
+            if (carStock == null)
+            {
+                throw  new Exception("not found car for "+ command.Car.Id);
+            }
+
+            var updatedStock = carStock.Update(command.Car);
 
             _repository.Update(updatedStock);
         }
